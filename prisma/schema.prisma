@@ -11,7 +11,8 @@ datasource db {
 }
 
 // Prisma will read this and understand what SQL Command it needs to write
-// To push the commands to db use: [ npx prisma db push ]
+// To push the commands to db, use: [ npx prisma db push ]
+// To see the db, use: npx prisma studio
 
 model User {
   id               Int       @id @default(autoincrement())
