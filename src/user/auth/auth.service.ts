@@ -5,16 +5,17 @@ import * as jwt from 'jsonwebtoken';
 import { UserType } from '@prisma/client';
 import { json } from 'stream/consumers';
 
+
+interface SigninParams {
+  email: string;
+  password: string;
+}
+
 interface SignupParams {
   email: string;
   password: string;
   name: string;
   phone: string;
-}
-
-interface SigninParams {
-  email: string;
-  password: string;
 }
 
 @Injectable()
@@ -73,5 +74,12 @@ export class AuthService {
         expiresIn: 3600000,
       },
     );
+  }
+
+  // To identify user as realtor
+  generateProductKey(email: string, userType: UserType) {
+    const string = `${email}-${userType}-${process.env.PRODUCT_KEY_SECRET}`;
+
+    return bcrypt.hash(string, 10);
   }
 }
