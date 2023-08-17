@@ -7,6 +7,7 @@ export class HomeResponseDto {
   address: string;
   city: string;
   price: number;
+  image: string;
   propertyType: PropertyType;
 
 
