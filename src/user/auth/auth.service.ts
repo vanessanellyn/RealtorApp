@@ -3,7 +3,6 @@ import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from "bcryptjs";
 import * as jwt from 'jsonwebtoken';
 import { UserType } from '@prisma/client';
-import { json } from 'stream/consumers';
 
 
 interface SigninParams {
@@ -22,7 +21,7 @@ interface SignupParams {
 export class AuthService {
   constructor(private readonly prismaService: PrismaService){}
 
-  async signup({email, password, name, phone}: SignupParams) {
+  async signup({email, password, name, phone}: SignupParams, userType: UserType) {
     const userExists = await this.prismaService.user.findUnique({
       where: {
         email
@@ -40,7 +39,7 @@ export class AuthService {
         name,
         phone,
         password: hashedPassword,
-        user_type: UserType.BUYER
+        user_type: userType
       },
     });
 
