@@ -3,6 +3,7 @@ import { Controller, Post, Get, Body, Param, ParseEnumPipe, UnauthorizedExceptio
 import { SignupDto, SigninDto, GenerateProductKeyDto } from './dtos/auth.dto';
 import { AuthService } from './auth.service';
 import * as bcrypt from "bcryptjs";
+import { User, UserInfo } from 'src/user/decorators/user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -39,4 +40,8 @@ export class AuthController {
     return this.authService.generateProductKey(email, userType)
   }
 
+  @Get("/me")
+  me( @User() user: UserInfo ) {
+    return user;
+  }
 }

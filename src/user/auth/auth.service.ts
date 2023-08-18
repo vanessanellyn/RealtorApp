@@ -1,5 +1,5 @@
 import { ConflictException, HttpException, Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
 import * as bcrypt from "bcryptjs";
 import * as jwt from 'jsonwebtoken';
 import { UserType } from '@prisma/client';
@@ -55,7 +55,6 @@ export class AuthService {
 
     const hashedPassword = user.password;
     const isValidPassword = await bcrypt.compare(password, hashedPassword);
-
     if(!user) throw new HttpException("Invalid credentials", 400);
     if(!isValidPassword)  throw new HttpException("Invalid credentials", 400);
 
