@@ -95,7 +95,6 @@ export class CreateHomeDto {
 
   @IsArray()
   @ValidateNested({each: true})
-  @Type(() => Image)
   images: Image[];
 }
 

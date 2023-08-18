@@ -21,7 +21,7 @@ interface CreateHomeParam {
   landSize: number;
   propertyType: PropertyType;
   // An array of objects where each url is a string
-  images: {url: string}[];
+  images: { url: string }[];
 }
 
 interface UpdateHomeParam {
@@ -115,8 +115,7 @@ export class HomeService {
       price,
       propertyType,
       images,
-    }: CreateHomeParam,
-    userId: number,
+    }: CreateHomeParam, userId: number,
   ) {
     const home = await this.prismaService.home.create({
       data: {
@@ -167,7 +166,6 @@ export class HomeService {
         home_id: id,
       },
     });
-    
     await this.prismaService.home.delete({
       where: {
         id,

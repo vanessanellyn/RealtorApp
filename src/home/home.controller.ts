@@ -2,6 +2,7 @@ import { Controller, Get, Post, Put, Delete, Query, Body, Param, ParseIntPipe } 
 import { HomeService } from './home.service';
 import { CreateHomeDto, HomeResponseDto, UpdateHomeDto } from './dtos/home.dto';
 import { PropertyType } from '@prisma/client';
+import { User, UserInfo } from 'src/user/decorators/user.decorator';
 
 @Controller('home')
 export class HomeController {
@@ -37,8 +38,8 @@ export class HomeController {
 
   
   @Post()
-  createHome(@Body() body: CreateHomeDto, userId: number){
-    return this.homeService.createHome(body, userId);
+  createHome(@Body() body: CreateHomeDto, @User() user: UserInfo){
+    return this.homeService.createHome(body, user.id);
   }
 
   @Put(':id')
