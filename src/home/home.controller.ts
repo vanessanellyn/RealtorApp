@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Query, Body, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Query, Body, Param, ParseIntPipe, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { HomeService } from './home.service';
 import { CreateHomeDto, HomeResponseDto, UpdateHomeDto } from './dtos/home.dto';
 import { PropertyType } from '@prisma/client';
@@ -36,22 +36,36 @@ export class HomeController {
     return this.homeService.getHomeById(id);
   }
 
-  
   @Post()
   createHome(@Body() body: CreateHomeDto, @User() user: UserInfo){
     return this.homeService.createHome(body, user.id);
   }
 
   @Put(':id')
-  updateHome(
-    @Param('id', ParseIntPipe) id:number,
+  async updateHome(
+    @Param('id', ParseIntPipe) id: number,
     @Body() body:UpdateHomeDto,
+    @User() user: UserInfo
   ){
+    const realtor = await this.homeService.getRealtorByHomeId(id);
+
+    if(realtor.id !== user.id) {
+      throw new UnauthorizedException();
+    }
+
     return this.homeService.updateHomeById(id, body);
   }
 
   @Delete(':id')
-  deleteHome(@Param('id', ParseIntPipe) id: number){
+  async deleteHome(
+    @Param('id', ParseIntPipe) id: number,
+    @User() user: UserInfo,
+  ) {
+    const realtor = await this.homeService.getRealtorByHomeId(id);
+
+    if (realtor.id !== user.id) {
+      throw new UnauthorizedException();
+    }
     return this.homeService.deleteHomeById(id);
   }
 }
