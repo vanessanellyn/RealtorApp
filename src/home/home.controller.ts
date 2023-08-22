@@ -1,8 +1,11 @@
-import { Controller, Get, Post, Put, Delete, Query, Body, Param, ParseIntPipe, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Query, Body, Param, ParseIntPipe, UseGuards, UnauthorizedException } from '@nestjs/common';
 import { HomeService } from './home.service';
 import { CreateHomeDto, HomeResponseDto, UpdateHomeDto } from './dtos/home.dto';
 import { PropertyType } from '@prisma/client';
 import { User, UserInfo } from 'src/user/decorators/user.decorator';
+import { AuthGuard } from 'src/user/auth/guards/auth.guard';
+import { Roles } from 'src/decorators/role.decorator';
+import { UserType } from "@prisma/client";
 
 @Controller('home')
 export class HomeController {
@@ -36,11 +39,13 @@ export class HomeController {
     return this.homeService.getHomeById(id);
   }
 
+  @Roles( UserType.REALTOR )
   @Post()
   createHome(@Body() body: CreateHomeDto, @User() user: UserInfo){
     return this.homeService.createHome(body, user.id);
   }
 
+  @Roles( UserType.REALTOR )
   @Put(':id')
   async updateHome(
     @Param('id', ParseIntPipe) id: number,
@@ -56,6 +61,7 @@ export class HomeController {
     return this.homeService.updateHomeById(id, body);
   }
 
+  @Roles( UserType.REALTOR )
   @Delete(':id')
   async deleteHome(
     @Param('id', ParseIntPipe) id: number,
@@ -69,3 +75,9 @@ export class HomeController {
     return this.homeService.deleteHomeById(id);
   }
 }
+
+//REALTOR
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiUmVhbHRvciIsImlkIjoxMSwiaWF0IjoxNjkyMzQ5MTUwLCJleHAiOjE2OTU5NDkxNTB9.4ggzIqTxDJI_nZvKFm61nxdG7k3QoTzXjT7G2AygMtM
+
+//BUYER
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQnV5ZXIiLCJpZCI6MTAsImlhdCI6MTY5MjM0OTI0NiwiZXhwIjoxNjk1OTQ5MjQ2fQ.vO7d66mxzg2CxXwQyIq9yX_zJBQRrHJlWKmGhCRVCwg
