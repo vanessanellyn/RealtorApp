@@ -1,9 +1,8 @@
-import { Controller, Get, Post, Put, Delete, Query, Body, Param, ParseIntPipe, UseGuards, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Query, Body, Param, ParseIntPipe, UnauthorizedException } from '@nestjs/common';
 import { HomeService } from './home.service';
-import { CreateHomeDto, HomeResponseDto, UpdateHomeDto } from './dtos/home.dto';
+import { CreateHomeDto, HomeResponseDto, UpdateHomeDto, InquireDto } from './dtos/home.dto';
 import { PropertyType } from '@prisma/client';
 import { User, UserInfo } from 'src/user/decorators/user.decorator';
-import { AuthGuard } from 'src/user/auth/guards/auth.guard';
 import { Roles } from 'src/decorators/role.decorator';
 import { UserType } from "@prisma/client";
 
@@ -73,6 +72,31 @@ export class HomeController {
       throw new UnauthorizedException();
     }
     return this.homeService.deleteHomeById(id);
+  }
+
+  @Roles( UserType.BUYER )
+  @Post('/:id/inquire')
+  inquire(
+    @Param('id', ParseIntPipe) homeId: number,
+    @User() user: UserInfo,
+    @Body() {message}: InquireDto
+  ) {
+    return this.homeService.inquire(user, homeId, message);
+  }
+
+  @Roles( UserType.REALTOR )
+  @Get('/:id/messages')
+  async getHomeMessages(
+    @Param('id', ParseIntPipe) homeId: number,
+    @User() user: UserInfo,
+  ) {
+    const realtor = await this.homeService.getRealtorByHomeId(homeId);
+
+    if(realtor.id !== user.id) {
+      throw new UnauthorizedException();
+    }
+
+    return this.homeService.getMessagesByHome(homeId);
   }
 }
 
