@@ -167,7 +167,7 @@ describe('HomeService', () => {
 
       jest
         .spyOn(prismaService.image, "createMany")
-        .mockImplementation(mockCreateManyImages)
+        .mockImplementation(mockCreateManyImages);
 
       await service.createHome(mockCreateHomeParams, 5);
 
