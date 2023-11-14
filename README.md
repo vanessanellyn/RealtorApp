@@ -1,4 +1,4 @@
-# RealtorApp
+<h1 align="center">Realtor REST API</h1> 
 RealtorApp is a web application designed to streamline real estate management processes. This project serves as a practical exploration of various JavaScript frameworks and technologies.
 
 ## NestJS Features
